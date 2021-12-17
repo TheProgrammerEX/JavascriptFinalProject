@@ -13,11 +13,12 @@
 			<li class="nav-item"><a class="nav-link" href="../mainpage/mainpage.html">Home page</a></li>
 			<li class="nav-item"><a class="nav-link" href="../makeorder/MakeOrder.html">Make order</a></li>
 			<li class="nav-item"><a class="nav-link" href="../loginpage/loginpage.html">Log In</a></li>
-			<li class="nav-item"><a class="nav-link" href="#">Registration</a></li>
+			<li class="nav-item"><a class="nav-link" href="../registerpage/registerpage.html">Registration</a></li>
 		</ul>
 </nav>
 </header>
 <main>
+	<form>
 	<div class="centercontent">
 		<h1>Make Order</h1>
 	</div>
@@ -26,42 +27,245 @@
 		<article class="articledecor">
 			<h2>Customize Pizza</h2>
 			<img class= "smallsize" alt="small" src="../pic/pizza.png"><br>
-			<input type="radio" value="Small">
+			<input type="radio" value="Small" name='size' class='pSize'>
 			<label>Small</label><br>
 			<img class= "medsize" alt="small" src="../pic/pizza.png"><br>
-			<input type="radio" value="Medium">
+			<input type="radio" value="Medium" name='size' class='pSize'>
 			<label>Medium</label><br>
 			<img class= "largesize" alt="small" src="../pic/pizza.png"><br>
-			<input type="radio" value="Large">
+			<input type="radio" value="Large" name='size' class='pSize'>
 			<label>Large</label>
 		</article>
 		<article class="articledecor">
 			<h2>Toppings</h2>
 				
-					<input type="radio" value="Veggie">
+					<input type="radio" id='vegTopping' value="Veggie" name='toppingType' class='toppingTypeRadio'>
 					<label>Veggie</label>
-					<input type="radio" value="Meat">
+					<input type="radio" id='nonVegTopping' value="Meat" name='toppingType' class='toppingTypeRadio'>
 					<label>Meat</label><br>
-					<select>Toppings:</select><br>
-					<textarea rows="" cols=""></textarea>
+					<label>Toppings:
+						<select id='topsList'>
+							  <option class='topOption' value="Empty"> </option>
+							  <option class='topOption' value="Tomato">Tomato</option>
+							  <option class='topOption' value="Pepper">Pepper</option>
+							  <option class='topOption' value="Olives">Olives</option>
+							  <option class='topOption' value="Onion">Onion</option>
+						 </select>
+					 </label>
+					<br>
+					<textarea readonly id="ToppingsList" rows="" cols=""></textarea>
 				
-		</article class="articledecor">
+		</article>
+		</div>
 		
 	<div class="d-flex flex-row">
 		<article class="articledecor">
 			<h2>Total Price</h2>
 				<div class="d-flex flex-row">
-					<textarea rows="" cols=""></textarea>
+					<textarea rows="" cols="" readonly id="totalPriceArea"></textarea>
+				</div>
+				<h3>Address:</h3>
+				<div class="d-flex flex-row">
+					<textarea rows="" cols="" id="addressArea"></textarea>
 				</div>
 		</article>
 		<article class="articledecor">
 			<h2>Make Order</h2>
 				<div class="d-flex flex-row">
-					<button>Submit</button>
+					<input type="submit" name="Submit" value="submit" onclick="return placeOrder();">
+					<button onclick='clearAll()'>Clear Order</button>
 				</div>
 		</article>
+		
 	</div>
 </div>
+</form>
+<script>
+//variables declaration (storing every element that we will use later in variable)
+var defaultSize = null;
+//order total value
+var totalValue = 0;
+//lists with veg and non veg toppings
+var vegToppingsList = ["", "Tomato", "Pepper", "Olives", "Onion"];
+var nonVegToppingsList = ["","Chicken", 'Beef', 'Fish', 'Veg-meat'];
+var totalField = document.getElementById('totalPriceArea');
+//list that will store user choose of toppings
+var userToppings = [];
+var toppingsRepresentation = document.getElementById('ToppingsList');
+var vegTopping = document.getElementById('vegTopping');
+var nonVegTopping = document.getElementById('nonVegTopping');
+var elementsArray = document.querySelectorAll(".pSize");
+var userAddress = document.getElementById("addressArea");
+
+var topsOptions = document.getElementById('topsList');
+var toppingsRadio = document.querySelectorAll(".toppingTypeRadio");
+//event listener to window load
+window.addEventListener('load', function() {
+	//checking veg toppings radiobutton
+	vegTopping.checked = true;
+	//resetting total value text area
+	totalField.value = "Total value is: " + totalValue;
+	//resetting toppings value text area
+	toppingsRepresentation.value = 'Toppings: ';
+});
+
+
+
+
+//event listener for all options inside select
+topsOptions.addEventListener('change', function(elem) {
+	//getting option text
+	var optionText = event.target.value;
+	//creating string that will later store all the toppings
+	var stringWithToppings = 'Toppings: ';
+	//if the topping text is not empty - do following
+	if(optionText != 'Empty') {
+	//if list of user toppings already have the chosen topping - do following 
+	if(userToppings.includes(optionText)) {
+		//index of the chosen topping inside array of user toppings
+		var index = userToppings.indexOf(optionText);
+		//deleting the element from array (deleting 1 element using splice)
+			userToppings.splice(index, 1);
+		//if the topping was from veg category - remove 2 from total value
+			if(vegTopping.checked == true) {
+				totalValue -= 2;
+				//otherwise - remove 5
+			} else {
+				totalValue -= 5;
+			}
+			
+	//if the topping was not already in the user toppings list:
+	} else {
+		//adding element to the array of the user toppings
+		userToppings.push(optionText);
+		//if the topping was from veg category - add 2 to the value
+		if(vegTopping.checked == true) {
+			totalValue += 2;
+			//otherwise - add 5
+		} else {
+			totalValue += 5;
+		}
+	}
+	//iterating through edited list of user toppings and printing it in the toppings text area
+	for(var i = 0; i < userToppings.length; i++) {
+		if(i != userToppings.length - 1) {
+		stringWithToppings += userToppings[i] + ", ";
+		} else {
+			stringWithToppings += userToppings[i];
+		}
+	}
+	toppingsRepresentation.value = stringWithToppings;
+	totalField.value = "Total Value: " + totalValue;
+	}
+});
+
+//function that triggers when we press on the clear button
+function clearAll() {
+	//iterating through all size radiobuttons and unchecking all of them
+	elementsArray.forEach(function(elem) { 
+			elem.checked = false;
+	});
+	
+	//clearing the list of user toppings
+	userToppings = [];
+	//resetting order value
+	totalValue = 0;
+	//clearing the textarea of user toppings
+	toppingsRepresentation.value = 'Toppings: ';
+	//resetting total value text area
+	totalField.value = "Total value is: " + totalValue;
+	defaultSize = null;
+}
+
+//object which stores size : value pair
+var sizeValue = {"Large" : 20, "Medium" : 15, "Small" : 10};
+
+//eventlistener for all size radiobuttons
+elementsArray.forEach(function(elem) {
+    elem.addEventListener("click", function() {
+    	//if we re setting the size for the first time - do following
+        if(defaultSize === null) {
+        	//storing the chosen size in the variable
+        	defaultSize = elem.value;
+        	//adding the value of the size to the total value
+        	totalValue += sizeValue[defaultSize];
+        	//printing the result in the total value text area
+        	totalField.value = "Total value is: " + totalValue;
+        	
+        	//if we changing the size:
+        } else {
+			//removing previous size value from the total value
+        	totalValue -= sizeValue[defaultSize];
+			//storing new size in variable
+        	defaultSize = elem.value;
+			//adding new size value to the total value
+        	totalValue += sizeValue[defaultSize];
+			//printing the result in the total value text area
+        	totalField.value = "Total value is: " + totalValue;
+        }
+    });
+});
+
+//eventlistener for all toppings radiobuttons
+toppingsRadio.forEach(function(elem) {
+    elem.addEventListener("click", function() {
+    	var option = document.getElementById("topsList");
+    	//if we press on the veggie radiobutton - do following:
+    	if(elem.value === 'Veggie') {
+    		 //iterating through options and setting the corresponding value and text, according to the list of the veg toppings
+    		  for (var i = 0; i < option.length; i++){
+    			  if(i != 0) {
+    			  option.options[i].value = vegToppingsList[i];
+    			  
+    			  } else {
+    				  option.options[i].value = 'Empty'; 
+    			  }
+    			  option.options[i].innerHTML = vegToppingsList[i];
+    		    
+    		  }
+    	} else {
+    		console.log('Non Veggie!');
+    		 //iterating through options and setting the corresponding value and text, according to the list of the non-veg toppings
+    		for (var i = 0; i < option.length; i++){
+    			  if(i != 0) {
+    		    option.options[i].value = nonVegToppingsList[i];
+    			  } else {
+    				  option.options[i].value = 'Empty';
+    			  }
+    		    option.options[i].innerHTML = nonVegToppingsList[i];
+    		    
+    		  }
+    	}
+    	//setting the defaul option at the start
+    	option.options[0].selected = 'selected';
+    });
+});
+
+//submit function
+function placeOrder() {
+	//storing the order detail inside the object (to send them to the server)
+	var order = {'size' : defaultSize, 'toppings' : userToppings, 'price' : totalValue, 'address' : userAddress.value};
+	//setting the sessionstorage items
+	sessionStorage.setItem('PizzaSize', defaultSize);
+	sessionStorage.setItem('toppings', userToppings.length);
+	sessionStorage.setItem('price', totalValue);
+	sessionStorage.setItem('address', userAddress.value);
+	//validating the address text area (if it's not empty)
+	if(userAddress.value != '') {
+		//if validation passed - redirecting to the main page
+	//document.location.href = "../mainpage/mainpage.html";
+	window.location.assign("../mainpage/mainpage.html");
+	}
+	
+	else {
+		//if validation failed - printing the alert
+		alert("Address field can't be empty!");
+	}
+	return false;
+}
+
+
+</script>
 </main>
 </body>
 </html>
