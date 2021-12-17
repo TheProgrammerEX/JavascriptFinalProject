@@ -4,7 +4,8 @@
 <meta charset="ISO-8859-1">
 <link rel="stylesheet" href="../css/style.css">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-<title>Login</title>
+
+<title>Insert title here</title>
 </head>
 <body>
 <header>
@@ -22,39 +23,87 @@
 <h1>Log In</h1>
 </div>
 <div class="centercontentform">
-<form onsubmit="login()">
+<form >
   <div class="form-group">
     <label for="email">Email:</label>
     <input type="email" id="email" name="email"><br><br>
-    <span id="emailErrorMessage"></span>
     <label for="password">Password:</label>
     <input type="password" id="password" name="password"><br><br>
-    <input type="submit" value="Submit">
+    <input id="buttonSubmit" type="submit" value="Submit" onclick='return submitLogin();'>
   </div>
 </form>
 </div>
-
 <script>
-  const email = document.getElementById("email");
-  
-  email.addEventListener("login",function(event){
-    
-    if(email.validity.typeMismatch){
-      email.setCustomValidity("The email you entered is not in a correct format.Please enter again ");
-      
-    }
-    
-    
-  });
 
-  function login(){
-    window.location.replace = "../mainpage/mainpage.html";
-  }
-  
-  
-  
-  </script>
-
+//initialize variables by getting item by their id
+var emailInput = document.getElementById('email');
+var passwordFieldInput = document.getElementById('password');
+var submitButton = document.getElementById('buttonSubmit');
+//getting text from email input field
+var emailInputText = emailInput.value;
+//adding event listener, when the page is loaded:
+window.addEventListener('load', (event) => {
+	//check if the user has filled the fields
+	//storing input data in sessionStogare(by using sessionStorage API). Data will be available during browser session.
+  if(sessionStorage.getItem("Password") != null && sessionStorage.getItem("Email") != null) {
+	emailInput.value = sessionStorage.getItem("Email");
+	passwordFieldInput.value =sessionStorage.getItem("Password"); 
+}
+	/*
+	sessionStorage.removeItem("Email");
+	sessionStorage.removeItem("Password");*/
+});
+//adding eventlistener for button
+submitButton.addEventListener ('click', function testFunc () {
+	
+	try{
+		
+//create boolean variable to check data validity
+	var isValid = true;
+	emailInputText = emailInput.value;
+	//create the variable with email regex
+	var mailformat = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+	console.log("Inside function");
+	//need to check if user's input is valid
+if(!emailInputText.match(mailformat)) {
+	//in the case when email input is not valid there will be alert message about it for user
+	isValid = false;
+	alert("Invalid email format!");
+	/*
+	sessionStorage.setItem("Email", emailInputText);
+	sessionStorage.setItem("Password", passwordFieldInput.value);*/
+	
+	
+} else {
+	//in the case if input is valid
+	isValid = true;
+	/*
+	sessionStorage.removeItem("Email");
+	sessionStorage.removeItem("Password");*/
+	
+	
+	//storing the Email input as a session storage variable 
+	sessionStorage.setItem("Name", emailInputText);
+	
+}
+	} catch(error) {
+		console.log(error);	
+	}
+});
+//
+function submitLogin() {
+	try {
+	//storing the Email input as a session storage variable 	
+	sessionStorage.setItem("Name", emailInputText);
+	//redirect to the mainpage
+	window.location.assign("../mainpage/mainpage.html");
+	} catch(error) {
+		console.log(error);
+	}
+	//need for rediarecting
+	return false;
+}
+</script>
 </main>
 
 </body>
