@@ -27,39 +27,119 @@
 	<div class="d-flex flex-row">
 		<article>
 			<h2>About Pizzeria</h2>
-			<p>Dear, Customer! Welcome to our web-site! We hope you'll find pizza which one you'll never forget!</p>
+			<p id="changedText"></p>
 		</article>
 		<article>
 			<h2>Pizza Day's Specials</h2>
-				<div class="d-flex flex-row">
+				
+					<div class="d-flex flex-row">
 						<img class="arrows" alt="arrow" src="../pic/arrow-two.jpg" id="lefArrow">
 						<img alt="Assorty" src="../pic/Pizza-Assorty.jpg" id='firstPickture'>
-						<img alt="Cheese" src="../pic/Pizza-Cheese.jpg" id='secondPickture'>
-						<img class="arrows" alt="arrow" src="../pic/arrow.jpg" id="rightArrow">
-				</div>
+						<img class="arrows" alt="arrow" src="../pic/arrow.jpg" id="rightArrow"><br>
+						
+					</div>
+					<div class="centercontent">
+						<label id="pizzaName">Assorty</label>
+					</div>
 		</article>
 	</div>
 </div>
 <script>
+
+//in the case if the user logged in the web page html text will be changed and call user by user's email. 
+	if(sessionStorage.getItem('Name') != null) {
+		document.getElementById('changedText').innerHTML = "Dear, "+sessionStorage.getItem('Name') +"! Welcome to our web-site! We hope you'll find pizza which one you'll never forget! ";
+
+	}
+	//in other case there will be shown prompt where user should insert his/her name
+	else{
+		var userName = prompt("Please, enter your name:");
+		//if user will choose cancel option there will be default name for uknown user 'Customer'
+		if(userName === null) {
+			userName = 'Customer';
+		}
+	
+		document.getElementById('changedText').innerHTML = "Dear, "+ userName +"! Welcome to our web-site! We hope you'll find pizza which one you'll never forget! ";
+		//sessionStorage will store the name and during session will not ask indentity confirmaiton
+		sessionStorage.setItem('Name', userName);
+	}
+	//There was collab with MakeOrder page
+	//print stored order details
+	if(sessionStorage.getItem('PizzaSize') != null) {
+		document.getElementById('changedText').innerHTML +=  '<br><br><b>Thanks for your order!</b><br><br>Your order: <br>Pizza size: ' + sessionStorage.getItem('PizzaSize');
+		document.getElementById('changedText').innerHTML +=  '<br>Topping`s count: ' + sessionStorage.getItem('toppings');
+		document.getElementById('changedText').innerHTML +=  '<br>Price: ' + sessionStorage.getItem('price');
+		document.getElementById('changedText').innerHTML +=  '<br>Delivery address: ' + sessionStorage.getItem('address');
+		
+	}
+
+
+//initialize variables
+//array object that stores the images' names
 var arryWithPictures = ['Pizza-Assorty.jpg','Pizza-Cheese.jpg', 'Pizza-Hawaii.jpg', 'Pizza-Shrimps.jpg'];
+//left and right arrows
 var leftArrowElement = document.getElementById('lefArrow');
+var rightArrowElement = document.getElementById('rightArrow');
+//relative path part
 var partialPath = '../pic/';
+//array object that stores the label names for pictures
+var arryPizzaNames = ['Assorty', 'Cheese', 'Hawaii', 'Shrimps'];
 
-
+//what will happend when left arrow is clicked
 leftArrowElement.addEventListener('click', function() {
+	//get image element by its id and getting the source
 	var firstPicRef = document.getElementById('firstPickture').src;
-	var secondPicRef = document.getElementById('secondPickture').src;
+	//get the image index name by searching from substring
 	var firstPicName = firstPicRef.substring(firstPicRef.lastIndexOf("/") + 1);
+	//get the images' indexes in the array
 	var indexOfFirstEl = arryWithPictures.indexOf(firstPicName);
-	console.log(indexOfFirstEl);
+	
+	//index of current element is more than 0
 	if(indexOfFirstEl > 0) {
-		var newPath = partialPath +  arryWithPictures[indexOfFirstEl - 1];
-		document.getElementById('secondPickture').src = partialPath + arryWithPictures[indexOfFirstEl];
-		document.getElementById('firstPickture').src = newPath;
+		//decrementing the index count
+		indexOfFirstEl--;
+		//concatenating the relative path part and name of the image(getting by index in the array) 
+		var newPath = partialPath +  arryWithPictures[indexOfFirstEl];
+		//adding new picture and label by innerHTML 
+		document.getElementById('pizzaName').innerHTML = arryPizzaNames[indexOfFirstEl];
+		document.getElementById('firstPickture').src = partialPath + arryWithPictures[indexOfFirstEl];
+
 	} else {
+		//if index is 0 we going to the last elements
+		//last element of array
 		var newPath = partialPath +  arryWithPictures[arryWithPictures.length - 1];
-		document.getElementById('secondPickture').src = partialPath + arryWithPictures[indexOfFirstEl];
 		document.getElementById('firstPickture').src = newPath;
+		document.getElementById('pizzaName').innerHTML = arryPizzaNames[arryPizzaNames.length - 1];
+	
+	}
+	
+});
+
+//what will happend when right arrow is clicked
+rightArrowElement.addEventListener('click', function() {
+	//get image element by its id and getting the source
+	var firstPicRef = document.getElementById('firstPickture').src;
+	//get the image index name by searching from substring
+	var firstPicName = firstPicRef.substring(firstPicRef.lastIndexOf("/") + 1);
+	//get the images' indexes in the array
+	var indexOfFirstEl = arryWithPictures.indexOf(firstPicName);
+
+	
+	//index of current element is less than 3
+	if(indexOfFirstEl < (arryWithPictures.length - 1)) {
+		//increasing the indexes count
+		indexOfFirstEl++;
+		//concatenating the relative path part and name of the image(getting by index in the array) 
+		var newPath = partialPath +  arryWithPictures[indexOfFirstEl];
+		//adding new picture and label by innerHTML 
+		document.getElementById('pizzaName').innerHTML = arryPizzaNames[indexOfFirstEl];
+		document.getElementById('firstPickture').src = partialPath + arryWithPictures[indexOfFirstEl];
+	} else {
+		//if index is 3 we going to the first elements
+		//first element of array
+		var newPath = partialPath +  arryWithPictures[arryWithPictures.length - 4];
+		document.getElementById('firstPickture').src = newPath;
+		document.getElementById('pizzaName').innerHTML = arryPizzaNames[arryPizzaNames.length - 4];
 	}
 	
 });
