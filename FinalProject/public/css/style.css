@@ -1,0 +1,77 @@
+@charset "ISO-8859-1";
+
+body{
+	background-image: url(../pic/Pizza-background.png);
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+ul>li{
+
+  display: inline;
+
+}
+
+ul{
+	display: flex;
+	justify-content: center;
+	background-color: wheat;
+	text-align: center;
+	display: inline-block;
+	
+}
+a{
+	text-decoration: none;
+}
+h1{
+	color: white;
+}
+
+h2{
+	color: white;
+}
+.centercontent{
+	display: flex;
+	justify-content: center;
+}
+.centercontentform{
+	display: flex;
+	justify-content: center;
+	position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+p{
+	color: white;
+}
+label{
+	color: white;
+}
+article{
+	border-style: double;
+	padding: 10px;
+	
+}
+img{
+	padding: 10px;
+}
+.arrows{
+	height: 50px;
+	weidth: 100px;
+}
+.articledecor{
+	background-color: grey;
+	
+}
+.smallsize{
+	height: 100px;
+	weidth: 100px;
+}
+.medsize{
+	height: 125px;
+	weidth: 125px;
+}
+.largesize{
+	height: 150px;
+	weidth: 150px;
+}
